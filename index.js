@@ -10,8 +10,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 app.use(cors());
 app.use(express.json());
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.jgbqt.mongodb.net/?retryWrites=true&w=majority`;
-
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.tyvbtey.mongodb.net/?retryWrites=true&w=majority`;
 
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
@@ -128,6 +127,8 @@ async function run() {
       res.send(result);
     });
 
+    /* payment get yet */
+
     app.post("/create-payment-intent", verifyJwt, async (req, res) => {
       const service = req.body;
       const price = service.totalPrize;
@@ -200,7 +201,7 @@ async function run() {
         return res.status(403).send({ message: "forbidden access" });
       }
     });
-
+    // order api
     app.get("/allorder", async (req, res) => {
       const order = await orderCollection.find().toArray();
       res.send(order);
