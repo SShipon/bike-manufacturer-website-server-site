@@ -12,6 +12,7 @@ app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.jgbqt.mongodb.net/?retryWrites=true&w=majority`;
 
+
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -42,7 +43,7 @@ async function run() {
     const reviewCollection = client.db("manufacturer").collection("review");
     const userCollection = client.db("manufacturer").collection("user");
     const paymentCollection = client.db("manufacturer").collection("payment");
-
+    const profileCollection = client.db("manufacturer").collection("profile");
     app.get("/product", async (req, res) => {
       const query = {};
       const cursor = manufacturerCollection.find(query);
@@ -58,7 +59,7 @@ async function run() {
     app.get("/admin/:email", async (req, res) => {
       const email = req.params.email;
       const user = await userCollection.findOne({ email: email });
-      const isAdmin = user.role === "admin";
+      const isAdmin = user?.role === "admin";
       res.send({ admin: isAdmin });
     });
 
@@ -105,8 +106,8 @@ async function run() {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const cursor = manufacturerCollection.find(query);
-      const sigleProduct = await cursor.toArray();
-      res.send(sigleProduct);
+      const singleProduct = await cursor.toArray();
+      res.send(singleProduct);
     });
 
     app.post("/order/:id", async (req, res) => {
@@ -122,21 +123,15 @@ async function run() {
     });
 
     app.post("/addproduct", async (req, res) => {
-      const newproduct = req.body;
-      const result = await manufacturerCollection.insertOne(newproduct);
-      res.send(result);
-    });
-
-    app.post("/myprofile", async (req, res) => {
-      const newService = req.body;
-      const result = await profileCollection.insertOne(newService);
+      const newProduct = req.body;
+      const result = await manufacturerCollection.insertOne(newProduct);
       res.send(result);
     });
 
     app.post("/create-payment-intent", verifyJwt, async (req, res) => {
       const service = req.body;
-      const prize = service.totalPrize;
-      const amount = prize * 100;
+      const price = service.totalPrize;
+      const amount = price * 100;
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amount,
         currency: "usd",
@@ -145,38 +140,46 @@ async function run() {
       res.send({ clientSecret: paymentIntent.client_secret });
     });
 
-    /* app.get("/myprofile/:email", async (req, res) => {
-      const email = req.params;
-      const cursor = profileCollection.find(email);
-      const products = await cursor.toArray();
-      res.send(products);
-    });
-
-    app.put("/myprofile/:id", async (req, res) => {
-      const id = req.params.id;
-      const updatUser = req.body;
-      const filter = { _id: ObjectId(id) };
-      const option = { upsert: true };
+    app.put("/profile/:email", verifyJwt, async (req, res) => {
+      const email = req.params.email;
+      const profile = req.body;
+      const filter = { email: email };
+      const options = { upsert: true };
       const updateDoc = {
         $set: {
-          education: updatUser.education,
-          city: updatUser.city,
-          phone: updatUser.phone,
+          name: profile.name,
+          email: profile.email,
+          address: profile.address,
+          education: profile.education,
+          phone: profile.phone,
+          location: profile.location,
+          city: profile.city,
+          country: profile.country,
+          social: profile.social,
         },
       };
       const result = await profileCollection.updateOne(
         filter,
         updateDoc,
-        option
+        options
       );
       res.send(result);
+    });
+
+    // user profile info get api
+    app.get("/profile", verifyJwt, async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const cursor = profileCollection.find(query);
+      const profile = await cursor.toArray();
+      res.send(profile);
     });
 
     app.get("/manageproduct", async (req, res) => {
       const query = {};
       const cursor = manufacturerCollection.find(query);
-      const manageorder = await cursor.toArray();
-      res.send(manageorder);
+      const manageOrder = await cursor.toArray();
+      res.send(manageOrder);
     });
 
     app.get("/review", async (req, res) => {
@@ -225,7 +228,7 @@ async function run() {
       const result = await orderCollection.deleteOne(query);
       res.send(result);
     });
- */
+
     app.delete("/product/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
