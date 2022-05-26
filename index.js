@@ -30,7 +30,9 @@ async function run() {
     await client.connect();
     const productCollection = client.db("Bike").collection("products");
     const reviewCollection = client.db("user-Review").collection("reviews");
-
+    const shipmentCollection = client
+      .db("shipment_details")
+      .collection("shipment_details");
     /* product database get */
     app.get("/product", async (req, res) => {
       const query = {};
