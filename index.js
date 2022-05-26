@@ -43,6 +43,7 @@ async function run() {
     const userCollection = client.db("manufacturer").collection("user");
     const paymentCollection = client.db("manufacturer").collection("payment");
     const profileCollection = client.db("manufacturer").collection("profile");
+
     app.get("/product", async (req, res) => {
       const query = {};
       const cursor = manufacturerCollection.find(query);
@@ -175,7 +176,7 @@ async function run() {
       const profile = await cursor.toArray();
       res.send(profile);
     });
-
+   //mangeProducts
     app.get("/manageproduct", async (req, res) => {
       const query = {};
       const cursor = manufacturerCollection.find(query);
@@ -221,7 +222,7 @@ async function run() {
       const updatedOrder = await orderCollection.updateOne(filter, updateDoc);
       const result = await paymentCollection.insertOne(payment);
       res.send(updatedOrder);
-    });
+    }); 
 
     app.delete("/order/:id", async (req, res) => {
       const id = req.params.id;
@@ -240,7 +241,7 @@ async function run() {
   }
 }
 run().catch(console.dir);
-
+//code
 app.get("/", (req, res) => {
   res.send("Manufacturer website");
 });
