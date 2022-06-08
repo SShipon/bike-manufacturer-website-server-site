@@ -56,12 +56,12 @@ async function run() {
       res.send(users);
     });
 
-    app.get("/admin/:email", async (req, res) => {
-      const email = req.params.email;
-      const user = await userCollection.findOne({ email: email });
-      const isAdmin = user?.role === "admin";
-      res.send({ admin: isAdmin });
-    });
+   app.get("/admin/:email", async (req, res) => {
+     const email = req.params.email;
+     const user = await userCollection.findOne({ email: email });
+     const isAdmin = user.role === "admin";
+     res.send({ admin: isAdmin });
+   });
 
     app.get("/order/:id", verifyJwt, async (req, res) => {
       const id = req.params.id;
@@ -69,13 +69,14 @@ async function run() {
       const order = await orderCollection.findOne(query);
       res.send(order);
     });
-
+     //admin user api 
     app.put("/user/admin/:email", verifyJwt, async (req, res) => {
       const email = req.params.email;
       const requesting = req.decoded.email;
       const requestingAccount = await userCollection.findOne({
         email: requesting,
       });
+    
       console.log(requestingAccount);
       if (requestingAccount.role === "admin") {
         const filter = { email: email };
@@ -88,7 +89,7 @@ async function run() {
         res.status(403).send({ message: "forbidden" });
       }
     });
-
+   //email put api add
     app.put("/user/:email", async (req, res) => {
       const email = req.params.email;
       const user = req.body;
@@ -101,7 +102,7 @@ async function run() {
       const token = jwt.sign({ email: email }, process.env.ACCES_TOKEN_SECRET);
       res.send({ result, token });
     });
-
+    
     app.get("/product/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -116,12 +117,8 @@ async function run() {
       res.send(result);
     });
 
-    app.post("/review/:id", async (req, res) => {
-      const review = req.body;
-      const result = await reviewCollection.insertOne(review);
-      res.send(result);
-    });
-
+  
+//product post code updated api 
     app.post("/addproduct", async (req, res) => {
       const newProduct = req.body;
       const result = await manufacturerCollection.insertOne(newProduct);
@@ -184,12 +181,32 @@ async function run() {
       res.send(manageOrder);
     });
 
+ //review api and post and get api
+  app.post("/review/:id", async (req, res) => {
+    const review = req.body;
+    const result = await reviewCollection.insertOne(review);
+    res.send(result);
+  });
+
     app.get("/review", async (req, res) => {
       const query = {};
       const cursor = reviewCollection.find(query);
       const result = await cursor.toArray();
       res.send(result);
-    });
+    }); 
+
+    
+/*    app.post("/reviews", async (req, res) => {
+     const result = await reviewCollection.insertOne(req.body);
+     res.send(result);
+   });
+
+   // get review
+   app.get("/reviews", async (req, res) => {
+     const result = await reviewCollection.find({}).toArray();
+     res.send(result);
+   });
+ */
 
     app.get("/order", verifyJwt, async (req, res) => {
       const email = req.query.customerEmail;
