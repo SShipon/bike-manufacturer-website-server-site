@@ -69,7 +69,7 @@ async function run() {
       const order = await orderCollection.findOne(query);
       res.send(order);
     });
-     //admin user api 
+     //admin user api code 
     app.put("/user/admin/:email", verifyJwt, async (req, res) => {
       const email = req.params.email;
       const requesting = req.decoded.email;
