@@ -10,7 +10,8 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 app.use(cors());
 app.use(express.json());
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.tyvbtey.mongodb.net/?retryWrites=true&w=majority`;
+
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.jgbqt.mongodb.net/`
 
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
@@ -24,7 +25,7 @@ function verifyJwt(req, res, next) {
     return res.status(401).send({ message: "unAuthorized access" });
   }
   const token = authHeader.split(" ")[1];
-  jwt.verify(token, process.env.ACCES_TOKEN_SECRET, function (err, decoded) {
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
     if (err) {
       return res.status(403).send({ message: "Forbidden access" });
     }
@@ -99,7 +100,7 @@ async function run() {
         $set: user,
       };
       const result = await userCollection.updateOne(filter, updateDoc, options);
-      const token = jwt.sign({ email: email }, process.env.ACCES_TOKEN_SECRET);
+      const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET);
       res.send({ result, token });
     });
     
@@ -119,7 +120,7 @@ async function run() {
 
   
 //product post code updated api 
-    app.post("/addproduct", async (req, res) => {
+    app.post("/addProduct", async (req, res) => {
       const newProduct = req.body;
       const result = await manufacturerCollection.insertOne(newProduct);
       res.send(result);
@@ -174,7 +175,7 @@ async function run() {
       res.send(profile);
     });
    //mangeProducts
-    app.get("/manageproduct", async (req, res) => {
+    app.get("/manageProduct", async (req, res) => {
       const query = {};
       const cursor = manufacturerCollection.find(query);
       const manageOrder = await cursor.toArray();
@@ -220,7 +221,7 @@ async function run() {
       }
     });
     // order api
-    app.get("/allorder", async (req, res) => {
+    app.get("/allOrder", async (req, res) => {
       const order = await orderCollection.find().toArray();
       res.send(order);
     });
