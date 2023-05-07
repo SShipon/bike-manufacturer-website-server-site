@@ -10,7 +10,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 app.use(cors());
 app.use(express.json());
 
-
+ // mongodb uri net
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.jgbqt.mongodb.net/`
 
 const client = new MongoClient(uri, {
@@ -44,7 +44,7 @@ async function run() {
     const userCollection = client.db("manufacturer").collection("user");
     const paymentCollection = client.db("manufacturer").collection("payment");
     const profileCollection = client.db("manufacturer").collection("profile");
-
+   
     app.get("/product", async (req, res) => {
       const query = {};
       const cursor = manufacturerCollection.find(query);
