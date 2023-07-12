@@ -11,7 +11,8 @@ app.use(cors());
 app.use(express.json());
 
  // mongodb uri net
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.jgbqt.mongodb.net/`
+
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.jgbqt.mongodb.net/?retryWrites=true&w=majority`;
 
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
@@ -261,9 +262,9 @@ async function run() {
 run().catch(console.dir);
 //code
 app.get("/", (req, res) => {
-  res.send("Manufacturer website");
+  res.send("Start Bike manufacturer server Running ");
 });
 
 app.listen(port, () => {
-  console.log(`this is port ${port}`);
+  console.log(` Bike manufacturer server Running ${port}`);
 });
