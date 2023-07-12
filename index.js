@@ -12,6 +12,8 @@ app.use(express.json());
 
  // mongodb uri net
 
+
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.jgbqt.mongodb.net/?retryWrites=true&w=majority`;
 
 const client = new MongoClient(uri, {
