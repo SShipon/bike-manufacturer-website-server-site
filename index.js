@@ -262,7 +262,7 @@ async function run() {
 run().catch(console.dir);
 //code
 app.get("/", (req, res) => {
-  res.send("Start Bike manufacturer server Running ");
+  res.send("<h2 style='margin:20% auto; text-align:center; color:gray; font-size:48px'>Start Bike manufacturer server Running</h2>");
 });
 
 app.listen(port, () => {
