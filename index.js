@@ -69,7 +69,7 @@ async function run() {
 
     app.get("/order/:id", verifyJwt, async (req, res) => {
       const id = req.params.id;
-      const query = { _id: ObjectId(id) };
+      const query = { _id: new ObjectId(id) };
       const order = await orderCollection.findOne(query);
       res.send(order);
     });
@@ -109,7 +109,7 @@ async function run() {
     
     app.get("/product/:id", async (req, res) => {
       const id = req.params.id;
-      const query = { _id: ObjectId(id) };
+      const query = { _id: new ObjectId(id) };
       const cursor = manufacturerCollection.find(query);
       const singleProduct = await cursor.toArray();
       res.send(singleProduct);
@@ -232,7 +232,7 @@ async function run() {
     app.patch("/order/:id", verifyJwt, async (req, res) => {
       const id = req.params.id;
       const payment = req.body;
-      const filter = { _id: ObjectId(id) };
+      const filter = { _id: new ObjectId(id) };
       const updateDoc = {
         $set: {
           paid: true,
@@ -247,14 +247,14 @@ async function run() {
 
     app.delete("/order/:id", async (req, res) => {
       const id = req.params.id;
-      const query = { _id: ObjectId(id) };
+      const query = { _id: new ObjectId(id) };
       const result = await orderCollection.deleteOne(query);
       res.send(result);
     });
 
     app.delete("/product/:id", async (req, res) => {
       const id = req.params.id;
-      const query = { _id: ObjectId(id) };
+      const query = { _id: new ObjectId(id) };
       const result = await manufacturerCollection.deleteOne(query);
       res.send(result);
     });
@@ -267,7 +267,7 @@ app.get("/", (req, res) => {
   res.send("<h2 style='margin:20% auto; text-align:center; color:gray; font-size:48px'>Start Bike manufacturer server Running</h2>");
 });
 
-/* this is hello dear  */
+/* listen port running  */
 
 app.listen(port, () => {
   console.log(` Bike manufacturer server Running ${port}`);
