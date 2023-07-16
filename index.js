@@ -38,7 +38,7 @@ function verifyJwt(req, res, next) {
 }
 
 async function run() {
-  try {
+  try { 
     await client.connect();
     console.log("db connected");
     const manufacturerCollection = client.db("Bike").collection("products");
@@ -133,15 +133,18 @@ async function run() {
 
     app.post("/create-payment-intent", verifyJwt, async (req, res) => {
       const service = req.body;
-      const price = service.totalPrize;
+      console.log(service)
+      const price = service.totalprice;
+      console.log()
       const amount = price * 100;
-      const paymentIntent = await stripe.paymentIntents.create({
+      console.log(amount)
+     const paymentIntent = await stripe.paymentIntents.create({
         amount: amount,
         currency: "usd",
         payment_method_types: ["card"],
       });
-      res.send({ clientSecret: paymentIntent.client_secret });
-    });
+      res.send({ clientSecret: paymentIntent.client_secret }); 
+    }); 
 
     app.put("/profile/:email", verifyJwt, async (req, res) => {
       const email = req.params.email;
@@ -156,7 +159,7 @@ async function run() {
           education: profile.education,
           phone: profile.phone,
           location: profile.location,
-          city: profile.city,
+          city: profile.city, 
           country: profile.country,
           social: profile.social,
         },
