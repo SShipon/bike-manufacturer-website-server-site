@@ -129,7 +129,7 @@ async function run() {
       res.send(result);
     });
 
-    /* payment get yet */
+    /* payment get yet  hello*/
 
     app.post("/create-payment-intent", verifyJwt, async (req, res) => {
       const service = req.body;
